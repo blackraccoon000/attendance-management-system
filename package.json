@@ -1,0 +1,19 @@
+{
+  "packageManager": "npm@10.2.4",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "tsc && vite build",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "just-install": "^2.0.2",
+    "turbo": "^2.3.3"
+  },
+  "dependencies": {
+    "typescript": "^5.7.2"
+  }
+}
