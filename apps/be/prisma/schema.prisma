@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// User情報に関するモデル
+model User {
+  id    Int     @id @default(autoincrement()) // ユーザーID
+  name  String // ユーザー名
+  email String? // メールアドレス
+  disabled  Boolean @default(false) // ユーザーが無効かどうか
+  createdAt DateTime @default(now()) // 作成日時
+  updateAt DateTime @default(now()) // 更新日時
+  Attendance Attendance[]
+}
+
+// 勤怠入力に関するモデル
+model Attendance {
+  id         Int      @id @default(autoincrement()) // 勤怠ID
+  userId     Int      // ユーザーID
+  user       User     @relation(fields: [userId], references: [id]) // ユーザーとのリレーション
+  date       DateTime // 勤怠日
+  clockIn    DateTime // 出勤時間
+  clockOut   DateTime // 退勤時間
+  breakDuration Int? // 休憩時間
+  notes      String?  // 備考
+  createdAt  DateTime @default(now()) // 作成日時
+  updatedAt  DateTime @default(now()) // 更新日時
+}
