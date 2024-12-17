@@ -1,29 +1,23 @@
 import {serve} from "@hono/node-server";
 import {Hono} from "hono";
-import {jwt, JwtVariables, sign} from "hono/jwt";
+import {jwt, sign} from "hono/jwt";
 import {logger} from "hono/logger";
 import {env, getRuntimeKey} from "hono/adapter";
 import {config as dotenvConfig} from "dotenv";
-import {login} from "./login/index.js";
+import {signin} from "./signin";
+import {signup} from "./signup";
+import {users} from "./users";
+import {HonoEnv} from "./types";
 
 // 環境変数を読み込む
 dotenvConfig();
 
-const app = new Hono<{
-  // JWTのペイロードの型
-  Variables: JwtVariables<{
-    name: string;
-  }>;
-  // 環境変数の型
-  Bindings: {
-    JWT_SECRET: string;
-  };
-}>();
+const app = new Hono<HonoEnv>();
 
 app
   .use("*", (c, next) => {
-    // /login へのリクエストはJWT認証をスキップする
-    if (c.req.path === "/login") {
+    // /signin へのリクエストはJWT認証をスキップする
+    if (["/signin"].includes(c.req.path)) {
       return next();
     }
     const secret = env(c).JWT_SECRET;
@@ -35,13 +29,15 @@ app
   .use(logger());
 
 const route = app
-  .route("/", login)
+  .route("/", signin)
+  .route("/", signup)
+  .route("/", users)
   // JWT発行前の処理
-  .get("/", async (c) => {
-    const {JWT_SECRET} = env(c, getRuntimeKey());
-    const token = await sign({username: "hono"}, JWT_SECRET);
-    return c.text(token);
-  })
+  // .get("/", async (c) => {
+  //   const {JWT_SECRET} = env(c, getRuntimeKey());
+  //   const token = await sign({username: "hono"}, JWT_SECRET);
+  //   return c.text(token);
+  // })
   .get("/auth", (c) => {
     const payload = c.get("jwtPayload");
     return c.json(payload);
