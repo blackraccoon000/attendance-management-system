@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "NodeNext",
+    "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
     "verbatimModuleSyntax": false,
