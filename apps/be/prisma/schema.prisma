@@ -18,6 +18,7 @@ model User {
   id    Int     @id @default(autoincrement()) // ユーザーID
   name  String // ユーザー名
   email String? // メールアドレス
+  password String? // パスワード
   disabled  Boolean @default(false) // ユーザーが無効かどうか
   createdAt DateTime @default(now()) // 作成日時
   updateAt DateTime @default(now()) // 更新日時
