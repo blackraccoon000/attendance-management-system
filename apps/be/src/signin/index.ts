@@ -10,13 +10,18 @@ const app = new Hono<HonoEnv>();
 
 export const signin = app.post(
   "/signin",
-  zValidator("query", schema),
+  zValidator("json", schema),
   async (c) => {
-    const {username, password} = c.req.valid("query");
-    console.log(username, password);
-
     try {
+      // const form = await c.req.formData();
+      // console.log(form);
+
+      const json = await c.req.json();
+      // console.log(json, c.req.header());
+
+      // const {username, password} = c.req.valid("query");
       // ユーザ認証処理
+
       const {JWT_SECRET} = env(c, getRuntimeKey());
       // TODO:ペイロードを整備する
       const token = await sign({username: "hono"}, JWT_SECRET);
