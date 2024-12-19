@@ -9,9 +9,9 @@ const prisma = new PrismaClient();
 
 export const signup = app.post(
   "/signup",
-  zValidator("query", schema),
+  zValidator("json", schema),
   async (c) => {
-    const {username, password} = c.req.valid("query");
+    const {username, password} = c.req.valid("json");
     console.log(username, password);
 
     try {
