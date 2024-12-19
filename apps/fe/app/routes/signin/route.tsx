@@ -1,22 +1,19 @@
-import {data, Form} from "react-router";
+import {data, Form, redirect} from "react-router";
 import type {Route} from "./+types/route";
-import {api} from "honoClient";
+import {api} from "libs/honoClient";
 import {useEffect} from "react";
 import {commitSession, getSession} from "libs/session";
+import {$path} from "safe-routes";
+import {schema} from "be/src/signin/schema";
 
 export const action = async ({request}: Route.ActionArgs) => {
   const formData = await request.formData();
-  const values = Object.fromEntries(formData);
-
-  // 保存
+  const {email: username, password} = Object.fromEntries(formData);
 
   try {
+    const json = schema.parse({username, password});
     const res = await api.signin.$post({
-      query: {
-        // 暫定追加　後でzodでバリデーションする
-        username: values.email as string,
-        password: values.password as string,
-      },
+      json,
     });
 
     // JWTトークンを取得
@@ -29,33 +26,16 @@ export const action = async ({request}: Route.ActionArgs) => {
       "Set-Cookie": await commitSession(session),
     };
 
-    // Cookieをブラウザにわたす
-    return data({message}, {headers});
+    // リダイレクトしつつ、JWTトークンをクライアントに返す
+    return redirect($path("/signin"), {headers});
   } catch (error) {
     console.error(error);
   }
-  // session.set("xxxxxxxx", "yyyyyyyy");
-  // const headers = {
-  //   "Set-Cookie": await commitSession(session),
-  // };
-  // return data({token}, {headers});
-
-  // 取得
-  // const session = await getSession(request.headers.get("Cookie"));
-
-  // const res = await api.auth.$get(undefined, {
-  //   headers: {
-  //     Authorization: `Bearer ${session.get("jwtToken")}`,
-  //   },
-  // });
-  // const result = await res.text();
-  // console.log(result);
-  // return data(result);
 };
 
 export default function Signup(props: Route.ComponentProps) {
   useEffect(() => {
-    console.log(props.actionData?.message);
+    console.log(props.actionData);
   }, []);
 
   return (

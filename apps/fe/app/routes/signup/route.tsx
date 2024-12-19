@@ -1,32 +1,28 @@
-import {data, Form} from "react-router";
+import {Form} from "react-router";
 import type {Route} from "./+types/route";
-import {api} from "honoClient";
+import {api} from "libs/honoClient";
 import {useEffect} from "react";
-import {commitSession, getSession} from "libs/session";
 import {authHeader} from "libs/authHeadr";
+import {schema} from "be/src/signup/schema";
 
 export const action = async ({request}: Route.ActionArgs) => {
   const formData = await request.formData();
   const values = Object.fromEntries(formData);
 
-  const session = await getSession(request.headers.get("Cookie"));
+  const json = schema.parse(values);
+
+  // const session = await getSession(request.headers.get("Cookie"));
   const res = await api.signup.$post(
     {
-      query: {
-        // 暫定追加　後でzodでバリデーションする
-        username: values.email as string,
-        password: values.password as string,
-      },
+      json,
     },
     {
       headers: {
-        // Authorization: `Bearer ${session.get("jwtToken")}`,
         Authorization: await authHeader(request),
       },
     }
   );
   const result = await res.json();
-  console.log(result);
 
   return result;
 };
