@@ -17,7 +17,7 @@ export default [
         myCustomGlobal: "readonly",
       },
     },
-    files: ["{app,libs}/**/*.{ts,tsx,js}"],
+    files: ["{src,tests}/**/*.{ts,tsx,js}"],
     rules: {
       "no-console": "warn",
     },

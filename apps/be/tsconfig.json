@@ -8,6 +8,7 @@
     "skipLibCheck": true,
     "types": ["node", "jest"],
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "jsxImportSource": "hono/jsx",
+    "sourceMap": true
   }
 }

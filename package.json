@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "tsc && vite build",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "lint": "turbo run lint"
   },
   "devDependencies": {
     "just-install": "^2.0.2",
